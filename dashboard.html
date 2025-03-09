@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <!-- Custom Styles -->
+    <style>
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+}
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            padding-top: 70px;
+            min-height: 100vh;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: #343a40 !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+        .navbar-brand {
+            font-size: 24px;
+            font-weight: bold;
+            color: #fff !important;
+        }
+        .navbar-toggler {
+            border: none;
+            color: #fff;
+        }
+        .navbar-toggler-icon {
+            background-color: #f3f0f0;
+        }
+
+        /* Admin and Logout Button */
+        .admin-logout {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-left: auto;
+        }
+        .admin-logout span {
+            color: #fff;
+            font-size: 16px;
+        }
+        .admin-logout button {
+            margin-left: 10px;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 70px;
+            bottom: 0;
+            left: 0;
+            width: 70px; /* Default width (icons only) */
+            background-color: #343a40;
+            padding-top: 20px;
+            box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            z-index: 999;
+            transition: width 0.3s ease;
+        }
+        .sidebar.active {
+            width: 250px; /* Expanded width (icons + text) */
+        }
+        .sidebar a {
+            text-decoration: none;
+            color: #fff;
+            font-size: 18px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+        .sidebar a:hover {
+            background-color: hsla(49, 5%, 45%, 0.603);
+            color: hsl(51, 100%, 50%);
+        }
+        .sidebar a i {
+            margin-right: 15px;
+            min-width: 20px; /* Ensure icons stay visible */
+        }
+        .sidebar a span {
+            display: none; /* Hide text by default */
+        }
+        .sidebar.active a span {
+            display: inline; /* Show text when sidebar is active */
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 70px; /* Default margin for sidebar width */
+            padding: 20px;
+            background-color: #fff;
+            min-height: calc(100vh - 70px);
+            transition: margin-left 0.3s ease;
+        }
+        .main-content.active {
+            margin-left: 250px; /* Adjust margin for expanded sidebar */
+        }
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .content-header h1 {
+            margin: 0;
+        }
+        .content-header .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Table Styling */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table th,
+        .table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .table th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+
+        /* Teacher Form */
+        #teacherForm {
+            display: none;
+            max-width: 500px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .select-container {
+            display: flex;
+            gap: 1rem; /* Optional: Space between selects */
+            flex-wrap: wrap;
+            }
+
+            .select {
+            flex: 1 1 30%; /* This ensures each select takes up 30% of the row */
+            }
+
+            .btn-group {
+                position: absolute;
+                right: 0;
+                margin: 0 20px 0 0;
+            }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 70px;
+            bottom: 0;
+            left: 0;
+            width: 60px; /* Default width (icons only) */
+            background-color: hsl(213, 5%, 32%);
+            padding-top: 20px;
+            box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            z-index: 999;
+            transition: width 0.3s ease;
+        }
+        .sidebar.active {
+            width: 250px; /* Expanded width (icons + text) */
+        }
+        .sidebar a {
+            text-decoration: none;
+            color: #fff;
+            font-size: 18px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+        .sidebar a i {
+            margin-right: 15px;
+            min-width: 20px; /* Ensure icons stay visible */
+        }
+        .sidebar a span {
+            display: none; /* Hide text by default */
+        }
+        .sidebar.active a span {
+            display: inline; /* Show text when sidebar is active */
+        }
+            .main-content {
+                margin-left: 60px;
+                font-size: .8rem;/* Prevent content shift on smaller screens */
+            }
+            .main-content.active {
+                margin-left: 60px; /* Adjust margin for expanded sidebar */
+            }
+            .content-header h1 {
+                font-size: 1.5rem;
+            }
+            .select {
+                flex: 1 1 100%; /* On smaller screens, make each select take full width */
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <!-- Logo and Brand Name -->
+        <a class="navbar-brand" href="#">
+            <i class="fas fa-tachometer-alt"></i>  AUPC
+        </a>
+
+        <!-- Admin and Logout Button -->
+        <div class="admin-logout">
+            <span><i class="fas fa-user"></i> Admin</span>
+            <button class="btn btn-outline-danger" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+    </div>
+</nav>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+    <!-- Hamburger Icon -->
+    <a href="#" id="sidebarToggle" class="d-flex align-items-center">
+        <i class="fa fa-bars" arsia-hidden="true"></i>
+    </a>
+    <a href="#" id="homeLink">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+    </a>
+    <a href="#" id="teachersLink">
+        <i class="fas fa-chalkboard-teacher"></i>
+        <span>List of Teachers</span>
+    </a>
+    <a href="#" id="filesLink">
+        <i class="fas fa-folder"></i>
+        <span>Files</span>
+    </a>
+    <a href="#" id="historyLink">
+        <i class="fas fa-history"></i>
+        <span>History</span>
+    </a>
+</div>
+
+<!-- Main Content -->
+<div class="main-content" id="mainContent">
+    <div class="content-header">
+        <div class="btn-group">
+            <button id="addTeacherBtn" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Add Teacher
+            </button>
+            <button id="viewRequestBtn" class="btn btn-secondary">
+                <i class="fas fa-eye"></i> View Request
+            </button>
+        </div>
+    </div>
+
+    <!-- Teacher Form -->
+    <!-- Teacher Form -->
+<div id="teacherForm">
+    <h3>Add Teacher</h3>
+    <form id="teacherFormContent">
+        <div class="mb-3">
+            <label for="teacherfName" class="form-label">First Name</label>
+            <input type="text" class="form-control" id="teacherfName" required>
+        </div>
+        <div class="mb-3">
+            <label for="teachermName" class="form-label">Middle Name</label>
+            <input type="text" class="form-control" id="teachermName" required>
+        </div>
+        <div class="mb-3">
+            <label for="teacherlName" class="form-label">Last Name</label>
+            <input type="text" class="form-control" id="teacherlName" required>
+        </div>
+        <div class="mb-3">
+            <label for="employee-id-#" class="form-label">Employee ID #</label>
+            <input type="number" class="form-control" id="employee-id-#" required>
+        </div>
+        <div class="mb-3">
+            <label for="advisoryClass" class="form-label">Advisory Class</label>
+            <div class="select-container" id="advisoryClass">
+                <div class="select">
+                    <select class="form-select" aria-label="Select Grade" id="grade">
+                        <option selected>Grade</option>
+                        <option value="12">12</option>
+                        <option value="11">11</option>
+                    </select>
+                </div>
+                <div class="select">
+                    <select class="form-select" aria-label="Select Strand" id="strand">
+                        <option selected>Strand</option>
+                        <option value="STEM">STEM</option>
+                        <option value="ICT">ICT</option>
+                        <option value="HE">HE</option>
+                        <option value="HUMSS">HUMSS</option>
+                        <option value="ABM">ABM</option>
+                    </select>
+                </div>
+                <div class="select">
+                    <select class="form-select" aria-label="Select Section" id="section">
+                        <option selected>Section</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="teacherEmail" class="form-label">Email</label>
+            <input type="email" class="form-control" id="teacherEmail" required>
+        </div>
+        <div class="mb-3">
+            <label for="teacherPassword" class="form-label">Password</label>
+            <input type="text" class="form-control" id="teacherPassword" required>
+        </div>
+        <div class="mb-3">
+            <label for="teacherConfirmPassword" class="form-label">Password</label>
+            <input type="text" class="form-control" id="teacherConfirmPassword" required>
+        </div>
+        <input type="hidden" name="createdBy"> <!-- Example: 1 is the admin ID -->
+        <button type="submit" class="btn btn-success w-100">Submit</button>
+    </form>
+</div>
+
+<!-- Table for Teachers -->
+<table class="table">
+    <h1>List of Teachers</h1>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Employee ID #</th>
+            <th>Advisory Class</th> <!-- Changed column title for clarity -->
+            <th>Date Created</th>
+        </tr>
+    </thead>
+    <tbody id="teacherTableBody">
+        <!-- Rows will be dynamically added here -->
+    </tbody>
+</table>
+
+
+<!-- Bootstrap JS and Popper.js -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+
+<script>
+    
+    // Function to handle logout
+    function logout() {
+        sessionStorage.clear();
+        localStorage.clear();
+        window.location.href = "index.html";
+    }
+    document.getElementById('logoutBtn').addEventListener('click', logout);
+
+    // Toggle Teacher Form
+document.getElementById('addTeacherBtn').addEventListener('click', function () {
+    const teacherForm = document.getElementById('teacherForm');
+    const addTeacherBtn = document.getElementById('addTeacherBtn');
+
+    if (teacherForm.style.display === 'block') {
+        // If the form is visible, hide it and reset the button
+        teacherForm.style.display = 'none';
+        addTeacherBtn.textContent = 'Add Teacher'; // Original text
+        addTeacherBtn.style.backgroundColor = ''; // Reset background color
+    } else {
+        // If the form is hidden, show it and change the button
+        teacherForm.style.display = 'block';
+        addTeacherBtn.textContent = 'CLOSE'; // Change text to CLOSE
+        addTeacherBtn.style.backgroundColor = 'red'; // Set background color to red
+    }
+});
+
+    // Handle Teacher Form Submission
+document.getElementById('teacherFormContent').addEventListener('submit', function (e) {
+    e.preventDefault();
+    const fname = document.getElementById('teacherfName').value;
+    const mname = document.getElementById('teachermName').value;
+    const lname = document.getElementById('teacherlName').value;
+    const email = document.getElementById('teacherEmail').value;
+    const employeeIdNumber = document.getElementById('employee-id-#').value;
+    const grade = document.getElementById('grade').value;
+    const strand = document.getElementById('strand').value;
+    const section = document.getElementById('section').value;
+    const dateCreated = new Date().toLocaleDateString();
+
+    // Add teacher to the table
+    const tableBody = document.getElementById('teacherTableBody');
+    const newRow = `
+        <tr>
+            <td>${fname} ${mname} ${lname}</td>
+            <td>${employeeIdNumber}</td>
+            <td>${grade}  ${strand} - ${section}</td> <!-- Improved format of advisory class -->
+            <td>${dateCreated}</td>
+        </tr>
+    `;
+    tableBody.insertAdjacentHTML('beforeend', newRow);
+
+    // Clear the form
+    document.getElementById('teacherFormContent').reset();
+    alert('Teacher added successfully!');
+});
+
+
+    // Toggle Sidebar
+    document.getElementById('sidebarToggle').addEventListener('click', function (e) {
+        e.preventDefault();
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+        sidebar.classList.toggle('active');
+        mainContent.classList.toggle('active');
+    });
+</script>
+
+</body>
+</html>
